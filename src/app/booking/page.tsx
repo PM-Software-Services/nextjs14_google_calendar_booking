@@ -4,13 +4,13 @@ import findAvailableSlots from "@/actions/findAvailableslots";
 import getBusyTimes from "@/actions/getBusyTimes";
 import CalendarAvailabilities from "@/components/Booking/CalendarAvailabilities";
 import Template from "@/components/template";
-import { AVAILABILITY, MEETING_DURATION } from "@/config";
+import { AVAILABILITY, MEETING_DURATION, MONTHS_BOOK_IN_ADVANCE_LIMIT } from "@/config";
 import { DateTimeInterval } from "@/types/DateTimeInterval";
 import { addMonths, addMinutes } from "date-fns";
 
 export default async function Page() {
   const startDay = addMinutes(new Date(), MEETING_DURATION)
-  const endDay = addMonths(startDay, 1)
+  const endDay = addMonths(startDay, MONTHS_BOOK_IN_ADVANCE_LIMIT)
 
   const interval: DateTimeInterval = {start: startDay, end: endDay}
 

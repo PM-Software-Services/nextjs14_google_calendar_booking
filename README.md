@@ -42,7 +42,37 @@ Within the config.ts file, adjust timezone, locale, duration of meetings, and li
 
 Variations of work day can also be altered/added.
 
+Note the current .env.example file
+
+```
+GOOGLE_OAUTH_CLIENT_ID=
+GOOGLE_OAUTH_SECRET=
+GOOGLE_OAUTH_REFRESH=
+
+STRIPE_ID=
+
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=
+STRIPE_SECRET_KEY=
+
+STRIPE_WEBHOOK_SECRET=
+
+NEXT_PUBLIC_API_URL= 
+
+STRIPE_DEPOSIT_PRODUCT_ID=
+
+CONTACT_EMAIL=
+
+CONTACT_NUMBER=
+```
+
+You can get the google oauth client id, secret, and refresh as per this [guide.](https://timfeeley.com/posts/nextjs-self-scheduler-calendly-alternative) 
+
+Retrieve the stripe publishable key, secret key, webhook secret from stripe. Make sure to create a prodcut valued at 100, and insert that product id as the stripe_deposit_product_ID.
+
+The next_public_api_url can initially be set to http://localhost:3000
+
+Contact email and number will be displayed in error/success pages. make sure these are the client/public details.
 
 # Learn More
 
-This tool was developed by PM Software Services. Any concerns or issues, please email peter.philips@pmsoftware.org
+This tool was developed by PM Software Services. Submit any issues/concerns, or email peter.philips@pmsoftware.org.

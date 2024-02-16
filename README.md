@@ -63,6 +63,8 @@ STRIPE_DEPOSIT_PRODUCT_ID=
 CONTACT_EMAIL=
 
 CONTACT_NUMBER=
+
+CONTACT_NAME=
 ```
 
 You can get the google oauth client id, secret, and refresh as per this [guide.](https://timfeeley.com/posts/nextjs-self-scheduler-calendly-alternative) 

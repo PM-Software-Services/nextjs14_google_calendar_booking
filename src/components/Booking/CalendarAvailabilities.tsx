@@ -2,7 +2,7 @@
 
 import { Calendar } from "@/components/ui/calendar";
 import { DateTimeInterval } from "@/types/DateTimeInterval";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Modal } from "@/components/Booking/Modal";
 
 
@@ -22,6 +22,14 @@ export default function CalendarAvailabilities({availableSlots}: CalendarAvailab
 
     const [selectedDaySlots, setSelectedDaySlots] = useState<DateTimeInterval[]>([]);
 
+    useEffect(() => {
+        if (availableSlots.length > 0) {
+            const firstAvailableDay = new Date(availableSlots[0].start).toDateString();
+            const firstDaySlots = availableSlots.filter(slot => new Date(slot.start).toDateString() === firstAvailableDay);
+            setSelectedDaySlots(firstDaySlots);
+        }
+    }, [availableSlots]);
+
     const handleDayClick = (date: Date) => {
         const slotsForDayClicked = availableSlots.filter(slot => {
             const slotDate = new Date(slot.start);
@@ -40,7 +48,7 @@ export default function CalendarAvailabilities({availableSlots}: CalendarAvailab
 
 
     return (
-        <div className="flex flex-col lg:flex-row items-center justify-center container">
+        <div className="flex flex-col items-center justify-center container">
             <div className="flex justify-center">
                 <Calendar 
                     showOutsideDays={false}
@@ -52,7 +60,7 @@ export default function CalendarAvailabilities({availableSlots}: CalendarAvailab
                     initialFocus
                     />
             </div>
-            <div className="mt-4 lg:mt-0 lg:ml-4 space-y-4">
+            <div className="mt-4 grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                 {selectedDaySlots.map((slot, index) => (
                     <Modal key={index} selectedDate={slot.start} />
                 ))}

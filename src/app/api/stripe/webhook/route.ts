@@ -4,6 +4,7 @@ import { headers } from 'next/headers';
 import { NextResponse } from 'next/server';
 import createCalendarBooking from '@/actions/createCalendarBooking';
 import { revalidatePath } from 'next/cache';
+import { sendBookingConfirmationEmail } from '@/actions/sendEmail';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!,
     {
@@ -30,9 +31,9 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!,
             const customerDetails = await stripe.checkout.sessions.retrieve(eventDataObject.id, {
                 expand: ['customer'],
             });
-
+            const customField = customerDetails.custom_fields.find(field => field.key === 'name')
             const sessionDetails = {
-                name: customerDetails.customer_details?.name,
+                name: customField?.text?.value,
                 email: customerDetails.customer_details?.email,
                 phone: customerDetails.customer_details?.phone,
                 amount: eventDataObject.amount_total ? eventDataObject.amount_total / 100 : 0,
@@ -44,7 +45,6 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!,
                 console.log("payment intent not found") ;
                 return NextResponse.json({error: "payment intent not found", ok: false}, {status: 400})
             }
-            // TODO: Wait for payment to succeed or fail.
             const bookingResult = await createCalendarBooking(sessionDetails)
             if (!bookingResult.ok) {
                 // Booking failed - cancel payment
@@ -57,16 +57,16 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!,
                 // booking succeeded - capture payment
                 await stripe.paymentIntents.capture(customerDetails.payment_intent?.toString());
 
+                // Send email re: booking 
+                if (sessionDetails.email) {
+                    await sendBookingConfirmationEmail(sessionDetails.email, sessionDetails);
+                }
+
                 console.log("payment captured")
                 revalidatePath('/booking')
                 return NextResponse.json({result: event, ok: true})
 
             }
-            
-
-            revalidatePath('/booking')
-            console.log("checkoutsession completed") ;
-            return NextResponse.json({result: event, ok: true})
 
         }
 
